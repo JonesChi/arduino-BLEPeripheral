@@ -1345,7 +1345,9 @@ void nRF51822::startAdvertising() {
   advertisingParameters.type        = this->_connectable ? BLE_GAP_ADV_TYPE_ADV_IND : ( this->_hasScanData ? BLE_GAP_ADV_TYPE_ADV_SCAN_IND : BLE_GAP_ADV_TYPE_ADV_NONCONN_IND );
   advertisingParameters.p_peer_addr = NULL;
   advertisingParameters.fp          = BLE_GAP_ADV_FP_ANY;
+#if !defined(S132)
   advertisingParameters.p_whitelist = NULL;
+#endif
   advertisingParameters.interval    = (this->_advertisingInterval * 16) / 10; // advertising interval (in units of 0.625 ms)
   advertisingParameters.timeout     = 0;
 
@@ -1359,7 +1361,11 @@ void nRF51822::disconnect() {
 void nRF51822::requestAddress() {
   ble_gap_addr_t gapAddress;
 
+#if defined(S132)
+  sd_ble_gap_addr_get(&gapAddress);
+#else
   sd_ble_gap_address_get(&gapAddress);
+#endif
 
   if (this->_eventListener) {
     this->_eventListener->BLEDeviceAddressReceived(*this, gapAddress.addr);
