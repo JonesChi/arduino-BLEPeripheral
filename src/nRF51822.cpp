@@ -1011,6 +1011,13 @@ void nRF51822::poll() {
         break;
       }
 
+#if defined(S132)
+      case BLE_GATTS_EVT_EXCHANGE_MTU_REQUEST:
+        sd_ble_gatts_exchange_mtu_reply(bleEvt->evt.gatts_evt.conn_handle,
+                                        GATT_MTU_SIZE_DEFAULT);
+        break;
+#endif
+
       default:
 #ifdef NRF_51822_DEBUG
         Serial.print(F("bleEvt->header.evt_id = 0x"));
